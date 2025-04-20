@@ -1,5 +1,5 @@
-FROM alpine:3.12
-LABEL maintainer="developer@tobias-heckel.de"
+FROM alpine:3.19
+LABEL maintainer="georgi@forkbomb.nl"
 
 # Build arguments need to be passed to `docker build` with `--build-arg KEY=VALUE`
 
@@ -19,11 +19,11 @@ ARG BUILD_VERSION
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.build-date=$BUILD_DATE
 LABEL org.label-schema.version=$BUILD_VERSION
-LABEL org.label-schema.name="strobi/rpi-gitea"
+LABEL org.label-schema.name="hristozov/rpi-gitea"
 LABEL org.label-schema.description="Gitea for Raspberry Pi on ARMv7"
 LABEL org.label-schema.url="https://gitea.io"
 LABEL org.label-schema.vcs-url="https://github.com/go-gitea/gitea"
-LABEL org.label-schema.docker.cmd="docker run -d -p 2200:22 -p 3000:3000 -v ~/gitea:/data strobi/rpi-gitea"
+LABEL org.label-schema.docker.cmd="docker run -d -p 2200:22 -p 3000:3000 -v ~/gitea:/data hristozov/rpi-gitea"
 
 # Ports that are listened on in the container
 # Can be matched to other ports on the host via `docker run`
@@ -95,7 +95,7 @@ RUN sed '/^CASignatureAlgorithms/s/,ssh-rsa//' /etc/templates/sshd_config > /etc
 
 # Get gitea and verify signature
 RUN mkdir -p /app/gitea \
-    && gpg --keyserver keyserver.ubuntu.com --recv 7C9E68152594688862D62AF62D9AE806EC1592E2 \
+    && gpg --keyserver keys.openpgp.org --recv 7C9E68152594688862D62AF62D9AE806EC1592E2 \
     && curl -sLo /app/gitea/gitea https://github.com/go-gitea/gitea/releases/download/v${BUILD_VERSION}/gitea-${BUILD_VERSION}-linux-arm-6 \
     && curl -sLo /app/gitea/gitea.asc https://github.com/go-gitea/gitea/releases/download/v${BUILD_VERSION}/gitea-${BUILD_VERSION}-linux-arm-6.asc \
     && gpg --verify /app/gitea/gitea.asc /app/gitea/gitea \
